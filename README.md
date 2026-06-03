@@ -160,4 +160,3 @@ For questions, issues, or feature requests:
 
 ---
 
-**Powered by Claude Code** - Bringing AI assistance to every stage of your cloud migration journey.
