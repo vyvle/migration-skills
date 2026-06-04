@@ -1,0 +1,180 @@
+# Known VMware Migration Error Patterns
+# This file helps agents quickly identify common issues
+
+patterns:
+  # Network Issues
+  - regex: "getaddrinfo.*Name or service not known"
+    category: network
+    severity: critical
+    issue: "DNS resolution failure"
+    solution: "Configure DNS or add entries to /etc/hosts on conversion host"
+
+  - regex: "Connection timed out.*:443"
+    category: network
+    severity: critical
+    issue: "vCenter HTTPS connection timeout"
+    solution: "Check firewall rules, verify vCenter is accessible on 443/TCP"
+
+  - regex: "Connection timed out.*:902"
+    category: network
+    severity: critical
+    issue: "ESXi NBD connection timeout"
+    solution: "Check firewall allows 902/TCP from conversion host to ESXi"
+
+  # Authentication Issues
+  - regex: "vim.fault.NoPermission"
+    category: authentication
+    severity: critical
+    issue: "Insufficient vCenter permissions"
+    solution: "Grant required permissions per CLAUDE.md VMware ACL section"
+    kb: "https://github.com/os-migrate/vmware-migration-kit#vmware-acl-requirements"
+
+  - regex: "vim.fault.InvalidLogin"
+    category: authentication
+    severity: critical
+    issue: "Invalid vCenter credentials"
+    solution: "Verify vcenter_username and vcenter_password in vault"
+
+  - regex: "Session is not authenticated"
+    category: authentication
+    severity: warning
+    issue: "vCenter session expired"
+    solution: "Increase session timeout or reduce migration time"
+
+  # NBDKit Issues
+  - regex: "nbdkit.*error.*opening.*plugin"
+    category: nbdkit
+    severity: critical
+    issue: "NBDKit VDDK plugin not found"
+    solution: "Install nbdkit-vddk-plugin package on conversion host"
+
+  - regex: "nbdkit.*VDDK.*error.*60075"
+    category: nbdkit
+    severity: critical
+    issue: "VDDK thumbprint mismatch"
+    solution: "Generate ESXi thumbprint and update configuration"
+
+  - regex: "nbdkit.*Failed to connect to.*vmdk"
+    category: nbdkit
+    severity: critical
+    issue: "Cannot connect to VMDK on datastore"
+    solution: "Verify VM disk path, check datastore permissions"
+
+  # Virt-v2v Issues
+  - regex: "virt-v2v.*inspection failed"
+    category: virt-v2v
+    severity: critical
+    issue: "Cannot inspect guest filesystem"
+    solution: "Check if VM OS is supported, verify disk integrity"
+
+  - regex: "virt-v2v.*btrfs.*not supported"
+    category: virt-v2v
+    severity: critical
+    issue: "BTRFS filesystem detected (unsupported on RHEL)"
+    solution: "Use Fedora-based conversion host (has BTRFS kernel support)"
+    kb: "See CLAUDE.md 'Known Limitations' section"
+
+  - regex: "virt-v2v.*Failed to install virtio drivers"
+    category: virt-v2v
+    severity: critical
+    issue: "Virtio driver injection failed (Windows VM)"
+    solution: "Ensure virtio-win >= 1.40 is installed on conversion host"
+
+  - regex: "virt-v2v.*Multiple operating systems found"
+    category: virt-v2v
+    severity: warning
+    issue: "Multi-boot VM detected"
+    solution: "May need manual intervention, check which OS to migrate"
+
+  # Storage Issues
+  - regex: "No space left on device"
+    category: storage
+    severity: critical
+    issue: "Out of disk space"
+    solution: "Free space on conversion host or destination Cinder volume"
+
+  - regex: "Failed to create volume"
+    category: storage
+    severity: critical
+    issue: "Cinder volume creation failed"
+    solution: "Check OpenStack quotas, available storage backend capacity"
+
+  - regex: "CBT.*changed block.*failed"
+    category: storage
+    severity: warning
+    issue: "Change Block Tracking synchronization failed"
+    solution: "May need full re-sync instead of incremental"
+
+  # Performance Issues
+  - regex: "Transfer rate:.*[0-9]\\.[0-9] MB/s"
+    category: performance
+    severity: warning
+    issue: "Very slow transfer rate"
+    solution: "Check network bandwidth, consider storage network instead of management"
+
+  - regex: "qemu-img.*Timeout"
+    category: performance
+    severity: warning
+    issue: "Disk conversion timeout"
+    solution: "Increase timeout values or reduce disk size"
+
+# Quick reference for required permissions
+vmware_permissions:
+  datastore:
+    - "Browse datastore"
+  virtual_machine:
+    guest_operations:
+      - "All guest operations"
+    provisioning:
+      - "Allow disk access"
+      - "Allow file access"
+      - "Allow read-only disk access"
+      - "Allow virtual machine download"
+    service_configuration:
+      - "Allow notifications"
+      - "Query configuration"
+      - "Read configuration"
+    snapshot:
+      - "Create snapshot"
+      - "Remove snapshot"
+      - "Rename snapshot"
+      - "Revert to snapshot"
+
+# Common firewall rules needed
+firewall_rules:
+  - port: 443
+    protocol: TCP
+    direction: conversion_host → vcenter
+    purpose: "vCenter API access"
+
+  - port: 902
+    protocol: TCP
+    direction: conversion_host → esxi
+    purpose: "NBD/NFC disk access"
+
+  - port: 22
+    protocol: TCP
+    direction: ansible_controller → conversion_host
+    purpose: "SSH management"
+
+  - port: 10809
+    protocol: TCP
+    direction: localhost_only
+    purpose: "NBDKit server (internal)"
+
+# Supported OS versions (for virt-v2v compatibility check)
+supported_os:
+  rhel:
+    - "9.4"
+    - "9.3"
+    - "8.5"
+  centos:
+    - "9"
+    - "8"
+  fedora:
+    - "38+"
+  ubuntu:
+    - "24"
+  windows:
+    - "10"
+    - "Server 2022"
