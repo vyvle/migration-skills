@@ -1,0 +1,12 @@
+#humanmade map of code to docs for vmware-migration-kit
+product: vmware-migration-kit
+code_repo: https://github.com/os-migrate/vmware-migration-kit
+docs_repo: https://github.com/os-migrate/documentation
+
+mappings:
+ - id: vmk-migrate-kit
+ - doc: #path to doc
+ - code: #path to code
+ - audience: # external/internal
+ - kind: #module/role/playbook/feature/ci
+ - status: # undocumented/documented/partial/stale

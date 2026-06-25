@@ -1,0 +1,11 @@
+docs_repo:
+  name: documentation
+  url: https://github.com/os-migrate/documentation
+  local_path: ~/ansible_collections/documentation
+code_repos:
+  os-migrate:
+    url: https://github.com/os-migrate/os-migrate
+    local_path: ~/ansible_collections/os-migrate
+  vmware-migration-kit:
+    url: https://github.com/os-migrate/vmware-migration-kit
+    local_path: ~/ansible_collections/vmware-migration-kit
