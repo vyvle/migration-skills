@@ -1,3 +1,9 @@
+---
+name: debug-osm-ci
+description: Debug os-migrate CI Environment
+tags: [debug, ci, openstack, devstack, connectivity]
+---
+
 # Debug os-migrate CI Environment
 
 Diagnose and fix connectivity issues in an OpenStack (devstack) migration environment.
