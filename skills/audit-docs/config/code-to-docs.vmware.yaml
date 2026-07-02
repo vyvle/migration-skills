@@ -1,0 +1,124 @@
+# Human-maintained map: vmware-migration-kit code -> documentation repo
+product: vmware-migration-kit
+code_repo: vmware-migration-kit
+docs_repo: documentation
+
+mappings:
+  - id: vmk-overview
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - README.md
+      - galaxy.yml
+    audience: external
+    kind: feature
+
+  - id: vmk-install
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - requirements.yml
+    audience: external
+    kind: feature
+    notes: "Install also mentioned in operator-aee-vmware.adoc"
+
+  - id: vmk-playbook-migration
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - playbooks/migration.yml
+    audience: external
+    kind: playbook
+
+  - id: vmk-pre-checks
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - playbooks/pre_checks.yml
+    audience: external
+    kind: playbook
+
+  - id: vmk-setup-requirements
+    doc: null
+    code:
+      - playbooks/setup_requirements.yml
+    audience: external
+    kind: playbook
+    status: undocumented
+
+  - id: vmk-conversion-host
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - roles/conversion_host/**
+      - playbooks/conversion_host_content.yml
+    audience: external
+    kind: role
+
+  - id: vmk-discovery
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - playbooks/gather_guest_metadata.yml
+      - roles/export_metadata/**
+    audience: external
+    kind: feature
+
+  - id: vmk-metadata-convert
+    doc: null
+    code:
+      - playbooks/convert_metadata.yml
+      - roles/convert_metadata/**
+    audience: external
+    kind: feature
+    status: undocumented
+
+  - id: vmk-migrate-nbdkit
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - playbooks/run_migration_from_conversion_host.yml
+      - roles/import_workloads/**
+      - plugins/modules/migrate.py
+    audience: external
+    kind: feature
+
+  - id: vmk-migrate-v2v
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - playbooks/migration_v2v.yml
+    audience: external
+    kind: playbook
+
+  - id: vmk-import-volumes
+    doc: null
+    code:
+      - playbooks/import_volumes.yml
+      - plugins/modules/import_vmware_volume.py
+    audience: external
+    kind: playbook
+    status: undocumented
+
+  - id: vmk-aee
+    doc: source/operator-aee-vmware.adoc
+    code:
+      - aee/**
+    audience: external
+    kind: feature
+
+  - id: vmk-troubleshooting
+    doc: source/operator-vmware-guide.adoc
+    code:
+      - roles/import_workloads/tasks/nbdkit.yml
+      - roles/import_workloads/tasks/virt_v2v.yml
+    audience: external
+    kind: feature
+    notes: "Troubleshooting section in vmware guide; may move after overhaul"
+
+  - id: vmk-developer-golang
+    doc: source/developer-dev-create-new-golang-module.adoc
+    code:
+      - plugins/modules/src/**
+      - plugins/module_utils/**
+    audience: internal
+    kind: feature
+
+  - id: vmk-ci
+    doc: source/developer-github-actions.adoc
+    code:
+      - .github/workflows/**
+    audience: internal
+    kind: ci

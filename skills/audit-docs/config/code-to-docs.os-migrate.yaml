@@ -1,0 +1,7 @@
+#humanmade map of code to docs for os-migrate
+# to be added later
+product: os-migrate
+code_repo: https://github.com/os-migrate/os-migrate
+docs_repo: https://github.com/os-migrate/documentation
+
+mappings: []
